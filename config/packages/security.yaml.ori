@@ -19,17 +19,8 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            #RHC
-            #anonymous: true
-            #lazy: true
-            #RHC provider: app_user_provider
-            form_login:
-                login_path: oauth_login
-            #custom_authenticators:
-            guard:
-                authenticator:
-                    - App\Security\KeycloakAuthenticator
-            entry_point: form_login
+            lazy: true
+            provider: app_user_provider
 
             # activate different ways to authenticate
             # https://symfony.com/doc/current/security.html#firewalls-authentication
@@ -40,6 +31,5 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        - { path: ^/dashboard, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
