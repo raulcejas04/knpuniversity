@@ -10,6 +10,7 @@ use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class KeycloakAuthenticator
@@ -43,12 +44,27 @@ class KeycloakAuthenticator extends SocialAuthenticator
 
     public function getCredentials(Request $request)
     {
-        return $this->fetchAccessToken($this->getKeycloakClient());
+    	$credentials=$this->fetchAccessToken($this->getKeycloakClient());
+    	$refreshToken=$credentials->getRefreshToken();
+    	$token= $credentials->getToken();
+	$session = new Session();
+        $session->set('refreshToken', $refreshToken );
+        $session->set('token', $token );
+        
+        return $credentials;
     }
 
-    public function getUser($credentials, \Symfony\Component\Security\Core\User\UserProviderInterface $userProvider)
+    public function getUser($credentials, \Symfony\Component\Security\Core\User\UserProviderInterface $userProvider )
     {
+    	//$client = $this->clientRegistry->getClient('keycloak');
+    	//$client = $this->getKeycloakClient();
+
+    	$token=$credentials->getToken(); //esto anda, pero no me deja sacar el refreshtoken
+    	$expires=$credentials->getExpires();
+    	//dd(date('Y-m-d H:i:s',$expires));
+
         $keycloakUser = $this->getKeycloakClient()->fetchUserFromToken($credentials);
+        //dd($keycloakUser);
         //dd($keycloakUser->toArray()['preferred_username']);
         //existing user ?
         $existingUser = $this
@@ -90,6 +106,7 @@ class KeycloakAuthenticator extends SocialAuthenticator
 
     public function onAuthenticationSuccess(Request $request, \Symfony\Component\Security\Core\Authentication\Token\TokenInterface $token, string $providerKey)
     {
+    	//dd($token);
         // change "app_homepage" to some route in your app
         $targetUrl = $this->router->generate('dashboard');
 
@@ -103,5 +120,6 @@ class KeycloakAuthenticator extends SocialAuthenticator
     {
         return $this->clientRegistry->getClient('keycloak');
     }
+
 }
 

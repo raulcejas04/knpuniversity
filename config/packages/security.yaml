@@ -19,13 +19,11 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            #RHC
-            #anonymous: true
-            #lazy: true
-            #RHC provider: app_user_provider
             form_login:
                 login_path: oauth_login
-            #custom_authenticators:
+            #logout:
+            #    path: oauth_logout
+            #    target: oauth_login
             guard:
                 authenticator:
                     - App\Security\KeycloakAuthenticator
@@ -41,5 +39,6 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/dashboard, roles: ROLE_USER }
+        #- { path: ^/*, roles: ROLE_USER }
         # - { path: ^/admin, roles: ROLE_ADMIN }
         # - { path: ^/profile, roles: ROLE_USER }
