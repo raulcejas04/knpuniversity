@@ -30,6 +30,16 @@ class Sexo
      */
     private $descripcion;
 
+    /**
+     * @ORM\OneToMany(targetEntity=PersonaFisica::class, mappedBy="sexo")
+     */
+    private $personasFisicas;
+
+    public function __construct()
+    {
+        $this->personasFisicas = new ArrayCollection();
+    }
+
     public function __toString()
     {
         return $this->getDescripcion();
@@ -55,6 +65,36 @@ class Sexo
     public function setDescripcion(string $descripcion): self
     {
         $this->descripcion = $descripcion;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|PersonaFisica[]
+     */
+    public function getPersonasFisicas(): Collection
+    {
+        return $this->personasFisicas;
+    }
+
+    public function addPersonasFisica(PersonaFisica $personasFisica): self
+    {
+        if (!$this->personasFisicas->contains($personasFisica)) {
+            $this->personasFisicas[] = $personasFisica;
+            $personasFisica->setSexo($this);
+        }
+
+        return $this;
+    }
+
+    public function removePersonasFisica(PersonaFisica $personasFisica): self
+    {
+        if ($this->personasFisicas->removeElement($personasFisica)) {
+            // set the owning side to null (unless already changed)
+            if ($personasFisica->getSexo() === $this) {
+                $personasFisica->setSexo(null);
+            }
+        }
 
         return $this;
     }

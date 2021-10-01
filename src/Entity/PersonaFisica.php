@@ -43,12 +43,7 @@ class PersonaFisica
      * @ORM\Column(type="date", nullable=true)
      */
     private $fechaNac;
-        /**
-     * @ORM\ManyToOne(targetEntity=Sexo::class, inversedBy="personasFisicas")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $sexo;
-
+    
     /**
      * @ORM\ManyToOne(targetEntity=EstadoCivil::class, inversedBy="personasFisicas")
      */
@@ -69,6 +64,12 @@ class PersonaFisica
      * @ORM\OneToMany(targetEntity=Representacion::class, mappedBy="personaFisica")
      */
     private $representaciones;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Sexo::class, inversedBy="personasFisicas")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $sexo;
 
     public function __construct()
     {
@@ -147,19 +148,6 @@ class PersonaFisica
         return $this;
     }
 
-    
-    public function getSexo(): ?Sexo
-    {
-        return $this->sexo;
-    }
-
-    public function setSexo(?Sexo $sexo): self
-    {
-        $this->sexo = $sexo;
-
-        return $this;
-    }
-
     public function getEstadoCivil(): ?EstadoCivil
     {
         return $this->estadoCivil;
@@ -222,6 +210,18 @@ class PersonaFisica
                 $representacione->setPersonaFisica(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getSexo(): ?Sexo
+    {
+        return $this->sexo;
+    }
+
+    public function setSexo(?Sexo $sexo): self
+    {
+        $this->sexo = $sexo;
 
         return $this;
     }
