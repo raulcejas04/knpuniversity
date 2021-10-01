@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
+ * @ORM\Table(name="usuario")
  */
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
@@ -39,6 +40,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      * @ORM\Column(type="string")
      */
     private $password;
+
+    /**
+     * @ORM\OneToOne(targetEntity=PersonaFisica::class, mappedBy="usuario", cascade={"persist", "remove"})
+     */
+    private $personasFisicas;
 
     public function getId(): ?int
     {
@@ -139,5 +145,27 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // If you store any temporary, sensitive data on the user, clear it here
         // $this->plainPassword = null;
+    }
+
+    public function getPersonasFisicas(): ?PersonaFisica
+    {
+        return $this->personasFisicas;
+    }
+
+    public function setPersonasFisicas(?PersonaFisica $personasFisicas): self
+    {
+        // unset the owning side of the relation if necessary
+        if ($personasFisicas === null && $this->personasFisicas !== null) {
+            $this->personasFisicas->setUsuario(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($personasFisicas !== null && $personasFisicas->getUsuario() !== $this) {
+            $personasFisicas->setUsuario($this);
+        }
+
+        $this->personasFisicas = $personasFisicas;
+
+        return $this;
     }
 }
